@@ -16,6 +16,26 @@ df["kms_run"] = pd.to_numeric(df["kms_run"], errors="coerce")
 df["yr_mfr"] = pd.to_numeric(df["yr_mfr"], errors="coerce")
 df.dropna(subset=["sale_price", "kms_run", "yr_mfr"], inplace=True)
 
+# Define known US models
+us_models = {
+    "civic", "accord", "crv", "pilot", "odyssey", "fit", "insight", "hrv",
+    "camry", "corolla", "rav4", "prius", "highlander", "tacoma", "sienna",
+    "altima", "sentra", "rogue", "murano", "maxima", "versa", "pathfinder",
+    "focus", "fusion", "mustang", "escape", "explorer", "fiesta", "edge",
+    "malibu", "cruze", "impala", "tahoe", "equinox", "traverse", "silverado",
+    "elantra", "sonata", "tucson", "santa fe", "accent",
+    "seltos", "sportage", "sorento", "soul", "forte",
+    "jetta", "passat", "golf", "tiguan", "taos",
+    "3 series", "5 series", "x1", "x3", "x5", "a3", "a4", "a6", "q3", "q5", "q7",
+    "c class", "e class", "cla class", "cls class", "ml class", "glc", "gle",
+    "compass", "wrangler", "cherokee", "grand cherokee",
+    "mazda3", "cx5", "impreza", "outback", "legacy"
+}
+
+
+# Filter only rows where model is in US list
+df = df[df["model"].isin(us_models)]
+
 # Hardcoded conversions
 INR_TO_USD = 0.012
 KM_TO_MILES = 0.621371
