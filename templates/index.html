@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🚗 Car Finder</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f6f8fa; text-align:center; padding:20px; }
+    input, button { padding:8px; margin:5px; }
+    table { border-collapse:collapse; margin:auto; width:80%; margin-top:20px; }
+    th, td { border:1px solid #ccc; padding:8px; }
+    th { background:#eee; }
+  </style>
+</head>
+<body>
+  <h1>🚗 Car Finder</h1>
+  <p>Find the best cars within your budget!</p>
+
+  <form id="carForm">
+    <input type="number" id="budget" placeholder="Enter your budget (USD)" required>
+    <input type="text" id="fuel_type" placeholder="Fuel type (optional)">
+    <input type="text" id="make" placeholder="Make name (optional)">
+    <button type="submit">Search</button>
+  </form>
+
+  <table id="results" style="display:none;">
+    <thead>
+      <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+        <th>Fuel</th>
+        <th>Miles</th>
+        <th>Price (USD)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    document.getElementById('carForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const budget = document.getElementById('budget').value;
+      const fuel = document.getElementById('fuel_type').value;
+      const make = document.getElementById('make').value;
+
+      let url = `/recommend?budget=${budget}`;
+      if (fuel) url += `&fuel_type=${fuel}`;
+      if (make) url += `&make=${make}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const table = document.getElementById('results');
+      const tbody = table.querySelector('tbody');
+      tbody.innerHTML = '';
+
+      if (data.error || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6">No results found.</td></tr>';
+      } else {
+        data.forEach(car => {
+          const row = `<tr>
+            <td>${car.make}</td>
+            <td>${car.model}</td>
+            <td>${car.yr_mfr}</td>
+            <td>${car.fuel_type}</td>
+            <td>${car.miles_run}</td>
+            <td>$${car.sale_price_usd}</td>
+          </tr>`;
+          tbody.innerHTML += row;
+        });
+      }
+
+      table.style.display = 'table';
+    });
+  </script>
+</body>
+</html>
